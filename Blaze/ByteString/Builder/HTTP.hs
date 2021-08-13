@@ -49,7 +49,11 @@ import Data.Monoid
 shiftr_w32 :: Word32 -> Int -> Word32
 
 #if defined(__GLASGOW_HASKELL__) && !defined(__HADDOCK__)
+#if MIN_VERSION_ghc_prim(0,8,0)
+shiftr_w32 (W32# w) (I# i) = W32# (wordToWord32# ((word32ToWord# w) `uncheckedShiftRL#` i))
+#else
 shiftr_w32 (W32# w) (I# i) = W32# (w `uncheckedShiftRL#`   i)
+#endif
 #else
 shiftr_w32 = shiftR
 #endif
