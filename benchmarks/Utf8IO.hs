@@ -2,9 +2,9 @@
 -- |
 -- Copyright   : (c) 2011 Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : tested on GHC only
 --
 -- Benchmarking IO output speed of writing a string in Utf8 encoding to a file.
@@ -25,14 +25,14 @@ import qualified Data.Text.Lazy.Encoding as TL
 import           System.IO
 import           System.Environment
 
-import           Blaze.ByteString.Builder           
+import           Blaze.ByteString.Builder
 import           Blaze.ByteString.Builder.Internal (defaultBufferSize)
 import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 
 
 -- | Write using the standard text utf8 encoding function built into 'base'.
 writeUtf8_base :: String -> FilePath -> IO ()
-writeUtf8_base cs file = 
+writeUtf8_base cs file =
     withFile file WriteMode $ \h -> do
         hSetEncoding h utf8
         hPutStr h cs
@@ -72,13 +72,13 @@ main = do
 
         -- utf8-light is missing support for lazy bytestrings => test 100 times
         -- writing a 100 times smaller string to avoid out-of-memory errors.
-        "utf8-light"  -> return $ \f -> sequence_ $ replicate 100 $ 
+        "utf8-light"  -> return $ \f -> sequence_ $ replicate 100 $
                                         writeUtf8_light (take (n `div` 100) cs) f
 
         "via-text"    -> do return $ writeUtf8_text tx
 
         -- Here, we ensure that the text tx is already packed before timing.
-        "text"        -> do _ <- evaluate (TL.length tx) 
+        "text"        -> do _ <- evaluate (TL.length tx)
                             return $ writeUtf8_text tx
         _             -> error $ "unknown writer '" ++ how ++ "'"
     t <- timed_ $ writer file
@@ -99,4 +99,3 @@ timed io = do
 -- | Execute an IO action and return the time it took to execute it.
 timed_ :: IO a -> IO NominalDiffTime
 timed_ = (snd `liftM`) . timed
-

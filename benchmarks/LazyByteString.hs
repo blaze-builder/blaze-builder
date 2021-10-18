@@ -3,9 +3,9 @@
 -- Module      : LazyByteString
 -- Copyright   : (c) 2010 Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : tested on GHC only
 --
 -- Benchmarking of alternative implementations of functions in
@@ -15,14 +15,14 @@ module LazyByteString where -- (main)  where
 
 import Data.Char
 import Data.Word
-import Data.Monoid 
-import Data.List 
+import Data.Monoid
+import Data.List
 
 import Control.Monad
 import Control.Arrow (second)
 import Criterion.Main
 
-import Foreign 
+import Foreign
 import qualified Data.ByteString               as S
 import qualified Data.ByteString.Unsafe        as S
 import qualified Data.ByteString.Internal      as S
@@ -41,7 +41,7 @@ import Blaze.ByteString.Builder.ByteString
 
 main :: IO ()
 main = do
-    let (chunkInfos, benchmarks) = unzip 
+    let (chunkInfos, benchmarks) = unzip
           {-
           [ lazyVsBlaze
               ( "partitionLazy"
@@ -97,7 +97,7 @@ main = do
               , toLazyByteString . concatMapBuilder (fromReplicateWord8 10)
               , (\i -> L.pack $ take i $ cycle [0..])
               , n `div` 10 )
-          , lazyVsBlaze 
+          , lazyVsBlaze
               ( "unfoldr countToZero"
               , L.unfoldr    countToZero
               , unfoldrBlaze countToZero
@@ -118,7 +118,7 @@ lazyVsBlaze (cmpName, lazy, blaze, prep, n) =
     ( do putStrLn $ cmpName ++ ": " ++ checkResults
          showChunksize implLazy  lazy
          showChunksize implBlaze blaze
-    , bgroup cmpName 
+    , bgroup cmpName
         [ mkBench implBlaze blaze
         , mkBench implLazy  lazy
         ]
@@ -129,7 +129,7 @@ lazyVsBlaze (cmpName, lazy, blaze, prep, n) =
     x = prep n
 
     nInfo = "for n = " ++ show n
-    checkResults 
+    checkResults
       | lazy x == blaze x = "implementations agree " ++ nInfo
       | otherwise         = unlines [ "ERROR: IMPLEMENTATIONS DISAGREE " ++ nInfo
                                     , implLazy ++ ": " ++ show (lazy x)
@@ -141,7 +141,7 @@ lazyVsBlaze (cmpName, lazy, blaze, prep, n) =
           cs = map S.length $ L.toChunks bs
       putStrLn $ "  " ++ implName ++ ": "
       putStrLn $ "    chunks sizes:    " ++ show cs
-      putStrLn $ "    avg. chunk size: " ++ 
+      putStrLn $ "    avg. chunk size: " ++
         show ((fromIntegral (sum cs) :: Double) / fromIntegral (length cs))
 
     mkBench implName impl = bench implName $ whnf (L.length . impl) x
@@ -179,7 +179,7 @@ unfoldrBlaze :: (a -> Maybe (Word8, a)) -> a -> L.ByteString
 unfoldrBlaze f x = toLazyByteString $ fromWriteUnfoldr writeWord8 f x
 
 fromWriteUnfoldr :: (b -> Write) -> (a -> Maybe (b, a)) -> a -> Builder
-fromWriteUnfoldr write = 
+fromWriteUnfoldr write =
     makeBuilder
   where
     makeBuilder f x0 = fromBuildStepCont $ step x0
@@ -195,8 +195,8 @@ fromWriteUnfoldr write =
                   | pf `plusPtr` bound <= pe0 = do
                       !pf' <- runWrite (write y) pf
                       go (f x') pf'
-                  | otherwise = return $ bufferFull bound pf $ 
-                      \(BufRange pfNew peNew) -> do 
+                  | otherwise = return $ bufferFull bound pf $
+                      \(BufRange pfNew peNew) -> do
                           !pfNew' <- runWrite (write y) pfNew
                           fill x' (BufRange pfNew' peNew)
                   where
@@ -207,7 +207,7 @@ fromWriteUnfoldr write =
 ------------------------
 
 test :: Int -> (L.ByteString, L.ByteString)
-test i = 
+test i =
     ((L.filter ((==0) . (`mod` 3)) $ x) ,
      (filterBlaze ((==0) . (`mod` 3)) $ x))
   where
@@ -237,12 +237,12 @@ mapLazyByteString :: (Word8 -> Word8) -> L.ByteString -> Builder
 mapLazyByteString f = mapFilterMapLazyByteString f (const True) id
 {-# INLINE mapLazyByteString #-}
 
-mapFilterMapByteString :: (Word8 -> Word8) -> (Word8 -> Bool) -> (Word8 -> Word8) 
+mapFilterMapByteString :: (Word8 -> Word8) -> (Word8 -> Bool) -> (Word8 -> Word8)
                        -> S.ByteString -> Builder
-mapFilterMapByteString f p g = 
+mapFilterMapByteString f p g =
     \bs -> fromBuildStepCont $ step bs
   where
-    step (S.PS ifp ioff isize) !k = 
+    step (S.PS ifp ioff isize) !k =
         goBS (unsafeForeignPtrToPtr ifp `plusPtr` ioff)
       where
         !ipe = unsafeForeignPtrToPtr ifp `plusPtr` (ioff + isize)
@@ -250,7 +250,7 @@ mapFilterMapByteString f p g =
           | ip0 >= ipe = do touchForeignPtr ifp -- input buffer consumed
                             k br
           | op0 < ope  = goPartial (ip0 `plusPtr` min outRemaining inpRemaining)
-          | otherwise  = return $ bufferFull 1 op0 (goBS ip0) 
+          | otherwise  = return $ bufferFull 1 op0 (goBS ip0)
           where
             outRemaining = ope `minusPtr` op0
             inpRemaining = ipe `minusPtr` ip0
@@ -267,9 +267,9 @@ mapFilterMapByteString f p g =
                       goBS ip (BufRange op ope)
 {-# INLINE mapFilterMapByteString #-}
 
-mapFilterMapLazyByteString :: (Word8 -> Word8) -> (Word8 -> Bool) -> (Word8 -> Word8) 
+mapFilterMapLazyByteString :: (Word8 -> Word8) -> (Word8 -> Bool) -> (Word8 -> Word8)
                            -> L.ByteString -> Builder
-mapFilterMapLazyByteString f p g = 
+mapFilterMapLazyByteString f p g =
     L.foldrChunks (\c b -> mapFilterMapByteString f p g c `mappend` b) mempty
 {-# INLINE mapFilterMapLazyByteString #-}
 
@@ -295,10 +295,10 @@ concatMap f (Chunk c0 cs0) = to c0 cs0
 -}
 
 fromWriteReplicated :: (a -> Write) -> Int -> a -> Builder
-fromWriteReplicated write = 
+fromWriteReplicated write =
     makeBuilder
   where
-    makeBuilder !n0 x = fromBuildStepCont $ step 
+    makeBuilder !n0 x = fromBuildStepCont $ step
       where
         bound = getBound $ write x
         step !k = fill n0
@@ -312,15 +312,15 @@ fromWriteReplicated write =
                   | pf `plusPtr` bound <= pe0 = do
                       pf' <- runWrite (write x) pf
                       go (n-1) pf'
-                  | otherwise = return $ bufferFull bound pf $ 
-                      \(BufRange pfNew peNew) -> do 
+                  | otherwise = return $ bufferFull bound pf $
+                      \(BufRange pfNew peNew) -> do
                           pfNew' <- runWrite (write x) pfNew
                           fill (n-1) (BufRange pfNew' peNew)
 {-# INLINE fromWriteReplicated #-}
 
 -- FIXME: Output repeated bytestrings for large replications.
 fromReplicateWord8 :: Int -> Word8 -> Builder
-fromReplicateWord8 !n0 x = 
+fromReplicateWord8 !n0 x =
     fromBuildStepCont $ step
   where
     step !k = fill n0
@@ -380,7 +380,7 @@ intersperse w (Chunk c cs) = Chunk (S.intersperse w c)
 intersperseBlaze :: Word8         -- ^ Byte to intersperse.
                  -> L.ByteString  -- ^ Lazy 'L.ByteString' to be "spread".
                  -> Builder       -- ^ Resulting 'Builder'.
-intersperseBlaze w lbs0 = 
+intersperseBlaze w lbs0 =
     Builder $ step lbs0
   where
     step lbs1 k = goChunk lbs1
@@ -390,21 +390,21 @@ intersperseBlaze w lbs0 =
             go
             touch
           where
-            go 
+            go
               where
-                !pf' = pf `plusPtr` 
-                
-            
+                !pf' = pf `plusPtr`
+
+
         goChunk !L.Empty                !pf = k pf pe0
         goChunk !lbs@(L.Chunk bs' lbs') !pf
           | pf' <= pe0 = do
-              withForeignPtr fpbuf $ \pbuf -> 
+              withForeignPtr fpbuf $ \pbuf ->
                   copyBytes pf (pbuf `plusPtr` offset) size
               go lbs' pf'
 
           | otherwise  = return $ BufferFull size pf (step lbs k)
           where
-            !pf' = pf `plusPtr` 
+            !pf' = pf `plusPtr`
             !(fpbuf, offset, size) = S.toForeignPtr bs'
 {-# INLINE intersperseBlaze #-}
 
@@ -455,14 +455,14 @@ copyBlaze = toLazyByteString . copyLazyByteString
 --------------------------------------------
 
 intersperseBlocks :: Int -> S.ByteString -> S.ByteString -> Builder
-intersperseBlocks blockSize sep (S.PS ifp ioff isize) = 
+intersperseBlocks blockSize sep (S.PS ifp ioff isize) =
     fromPut $ do
-        lastBS <- go (ip0 `plusPtr` ioff) 
+        lastBS <- go (ip0 `plusPtr` ioff)
         unless (S.null lastBS) (putBuilder $ fromByteString lastBS)
   where
     ip0 = unsafeForeignPtrToPtr ifp
     ipe = ip0 `plusPtr` (ioff + isize)
-    go !ip 
+    go !ip
       | ip `plusPtr` blockSize >= ipe =
           return $ S.PS ifp (ip `minusPtr` ip0) (ipe `minusPtr` ip)
       | otherwise = do
@@ -500,15 +500,15 @@ encodeBase64 :: S.ByteString -> Builder
 encodeBase64 = encodeLazyBase64 . L.fromChunks . return
 
 encodeLazyBase64 :: L.ByteString -> Builder
-encodeLazyBase64 = 
+encodeLazyBase64 =
     mkBuilder
   where
     mkBuilder bs = fromPut $ do
-        remainder <- putWriteLazyBlocks 3 writeBase64 bs 
+        remainder <- putWriteLazyBlocks 3 writeBase64 bs
         putBuilder $ complete remainder
 
     {-# INLINE writeBase64 #-}
-    writeBase64 ip = 
+    writeBase64 ip =
         exactWrite 4 $ \op -> do
             b0 <- peekByte 0
             b1 <- peekByte 1
@@ -519,7 +519,7 @@ encodeLazyBase64 =
       where
         peekByte :: Int -> IO Word32
         peekByte off = fmap fromIntegral (peekByteOff ip off :: IO Word8)
-        
+
         enc = peekElemOff (unsafeForeignPtrToPtr encodeTable) . fromIntegral
 
     {-# INLINE complete #-}
@@ -532,14 +532,14 @@ encodeLazyBase64 =
                   pad off = pokeByteOff op off (fromIntegral $ ord '=' :: Word8)
               poke6Base64 0 18
               poke6Base64 1 12
-              if S.length bs == 1 then pad 2 
+              if S.length bs == 1 then pad 2
                                   else poke6Base64 2 8
               pad 3
       where
         getByte :: Int -> Int -> Word32
         getByte i sh = fromIntegral (bs `S.unsafeIndex` i) `shiftL` sh
         w = getByte 0 16 .|. (if S.length bs == 1 then 0 else getByte 1 8)
-            
+
     -- Lookup table trick from Data.ByteString.Base64 by Bryan O'Sullivan
     {-# NOINLINE alphabet #-}
     alphabet :: S.ByteString
@@ -547,7 +547,7 @@ encodeLazyBase64 =
 
     -- FIXME: Check that the implementation of the lookup table aslo works on
     -- big-endian systems.
-    {-# NOINLINE encodeTable #-} 
+    {-# NOINLINE encodeTable #-}
     encodeTable :: ForeignPtr Word16
     encodeTable = unsafePerformIO $ do
         fp <- mallocForeignPtrArray 4096
@@ -573,23 +573,23 @@ putWriteBlocks :: Int                  -- ^ Block size.
 putWriteBlocks blockSize write =
     \bs -> putBuildStepCont $ step bs
   where
-    step (S.PS ifp ioff isize) !k = 
+    step (S.PS ifp ioff isize) !k =
         goBS (unsafeForeignPtrToPtr ifp `plusPtr` ioff)
       where
         !ipe = unsafeForeignPtrToPtr ifp `plusPtr` (ioff + isize)
         goBS !ip0 !br@(BufRange op0 ope)
-          | ip0 `plusPtr` blockSize > ipe = do 
+          | ip0 `plusPtr` blockSize > ipe = do
               touchForeignPtr ifp -- input buffer consumed
-              let !bs' = S.PS ifp (ip0 `minusPtr` unsafeForeignPtrToPtr ifp) 
+              let !bs' = S.PS ifp (ip0 `minusPtr` unsafeForeignPtrToPtr ifp)
                                   (ipe `minusPtr` ip0)
               k bs' br
 
-          | op0 `plusPtr` writeBound < ope  = 
+          | op0 `plusPtr` writeBound < ope  =
               goPartial (ip0 `plusPtr` (blockSize * min outRemaining inpRemaining))
 
-          | otherwise  = return $ bufferFull writeBound op0 (goBS ip0) 
+          | otherwise  = return $ bufferFull writeBound op0 (goBS ip0)
           where
-            writeBound   = getBound' "putWriteBlocks" write 
+            writeBound   = getBound' "putWriteBlocks" write
             outRemaining = (ope `minusPtr` op0) `div` writeBound
             inpRemaining = (ipe `minusPtr` ip0) `div` blockSize
 
@@ -618,20 +618,20 @@ putWriteLazyBlocks blockSize write =
     go (L.Chunk bs lbs) = do
       bsRem <- putWriteBlocks blockSize write bs
       case S.length bsRem of
-        lRem 
+        lRem
           | lRem <= 0 -> go lbs
           | otherwise -> do
-              let (lbsPre, lbsSuf) = 
+              let (lbsPre, lbsSuf) =
                       L.splitAt (fromIntegral $ blockSize - lRem) lbs
               case S.concat $ bsRem : L.toChunks lbsPre of
                 block@(S.PS bfp boff bsize)
                   | bsize < blockSize -> return block
                   | otherwise         -> do
-                      putBuilder $ fromWrite $ 
+                      putBuilder $ fromWrite $
                         write (unsafeForeignPtrToPtr bfp `plusPtr` boff)
                       putLiftIO $ touchForeignPtr bfp
-                      go lbsSuf 
-                          
+                      go lbsSuf
+
 
 ------------------------------------------------------------------------------
 -- Testing code
@@ -639,15 +639,15 @@ putWriteLazyBlocks blockSize write =
 
 
 chunks3 :: [Word8] -> [Word32]
-chunks3 (b0 : b1 : b2 : bs) = 
-    ((fromIntegral b0 `shiftL` 16) .|. 
-     (fromIntegral b1 `shiftL`  8) .|. 
+chunks3 (b0 : b1 : b2 : bs) =
+    ((fromIntegral b0 `shiftL` 16) .|.
+     (fromIntegral b1 `shiftL`  8) .|.
      (fromIntegral b2            )
     ) : chunks3 bs
 chunks3 _                   = []
 
 cmpWriteToLib :: [Word8] -> (L.ByteString, L.ByteString)
-cmpWriteToLib bs = 
+cmpWriteToLib bs =
     -- ( toLazyByteString $ fromWriteList write24bitsBase64 $ chunks3 bs
     ( toLazyByteString $ encodeBase64 $ S.pack bs
     , (`L.Chunk` L.empty) $ encode $ S.pack bs )
@@ -655,11 +655,11 @@ cmpWriteToLib bs =
 test3 :: Bool
 test3 = uncurry (==) $ cmpWriteToLib $ [0..]
 
-test2 :: L.ByteString 
+test2 :: L.ByteString
 test2 = toLazyByteString $ encodeBase64 $ S.pack [0..]
 
 {- OLD code
- 
+
 {-# INLINE poke8 #-}
 poke8 :: Word8 -> Ptr Word8 -> IO ()
 poke8 = flip poke
@@ -697,7 +697,7 @@ writePaddedBitsBase64 only8 w =
     write6bitsBase64 (w `shiftr_w32` 18)                         `mappend`
     write6bitsBase64 (w `shiftr_w32` 12)                         `mappend`
     writeIf (const only8) (const $ C8.writeChar '=')
-                          (write6bitsBase64 . (`shiftr_w32`  6)) 
+                          (write6bitsBase64 . (`shiftr_w32`  6))
                           w                                      `mappend`
     C8.writeChar '='
 
@@ -711,7 +711,7 @@ write24bitsBase64 w = write6bitsBase64 (w `shiftr_w32` 18) `mappend`
 -- ASSUMES bits 25 - 31 are zero.
 {-# INLINE write24bitsBase64' #-}
 write24bitsBase64' :: Word32 -> Write
-write24bitsBase64' w = 
+write24bitsBase64' w =
     exactWrite 4 $ \p -> do
       poke (castPtr p              ) =<< enc (w `shiftR` 12)
       poke (castPtr $ p `plusPtr` 2) =<< enc (w .&.   0xfff)
@@ -747,12 +747,12 @@ splitLazyAt n cs0
 
 {-# INLINE partitionStrict #-}
 partitionStrict :: (Word8 -> Bool) -> S.ByteString -> (S.ByteString, S.ByteString)
-partitionStrict f (S.PS ifp ioff ilen) = 
+partitionStrict f (S.PS ifp ioff ilen) =
     second S.reverse $ S.inlinePerformIO $ do
         ofp <- S.mallocByteString ilen
         withForeignPtr ifp $ wrapper ofp
   where
-    wrapper !ofp !ip0 = 
+    wrapper !ofp !ip0 =
         go (ip0 `plusPtr` ioff) op0 (op0 `plusPtr` ilen)
       where
         op0 = unsafeForeignPtrToPtr ofp
@@ -761,8 +761,8 @@ partitionStrict f (S.PS ifp ioff ilen) =
           | oph == opl = return (S.PS ofp 0 olen, S.PS ofp olen (ilen - olen))
           | otherwise  = do
               x <- peek ip
-              if f x 
-                then do poke opl x 
+              if f x
+                then do poke opl x
                         go (ip `plusPtr` 1) (opl `plusPtr` 1) oph
                 else do let oph' = oph `plusPtr` (-1)
                         poke oph' x
@@ -773,10 +773,10 @@ partitionStrict f (S.PS ifp ioff ilen) =
 
 {-# INLINE partitionLazy #-}
 partitionLazy :: (Word8 -> Bool) -> L.ByteString -> (L.ByteString, L.ByteString)
-partitionLazy f = 
+partitionLazy f =
     L.foldrChunks partitionOne (L.empty, L.empty)
   where
-    partitionOne bs (ls, rs) = 
+    partitionOne bs (ls, rs) =
         (L.Chunk l ls, L.Chunk r rs)
       where
         (l, r) = partitionStrict f bs

@@ -8,8 +8,8 @@
 -- Module:      Blaze.ByteString.Builder.Html.Word
 -- Copyright:   (c) 2016 Dylan Simon
 -- License:     BSD3
--- Maintainer:  Leon P Smith <leon@melding-monads.com>
--- Stability:   experimental
+-- Maintainer:  https://github.com/blaze-builder
+-- Stability:   stable
 --
 -- 'W.Write's and 'B.Builder's for serializing HTML escaped 'Word8' characters
 -- and 'BS.ByteString's that have already been appropriately encoded into HTML by

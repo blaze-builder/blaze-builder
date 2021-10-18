@@ -6,8 +6,8 @@
 -- Module:      Blaze.ByteString.Builder
 -- Copyright:   (c) 2013 Leon P Smith
 -- License:     BSD3
--- Maintainer:  Leon P Smith <leon@melding-monads.com>
--- Stability:   experimental
+-- Maintainer:  https://github.com/blaze-builder
+-- Stability:   stable
 --
 -- "Blaze.ByteString.Builder" is the main module, which you should import as a user
 -- of the @blaze-builder@ library.

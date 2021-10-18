@@ -1,36 +1,32 @@
 Name:                blaze-builder
-Version:             0.4.2.1
+Version:             0.4.2.2
 Synopsis:            Efficient buffered output.
 
 Description:
-                     This library provides an implementation of the older
-                     blaze-builder interface in terms of the new builder that
-                     shipped with bytestring-0.10.4.0
-                     .
-                     This implementation is mostly intended as a bridge to the
-                     new builder,  so that code that uses the old interface
-                     can interoperate with code that uses the new
-                     implementation.   Note that no attempt has been made
-                     to preserve the old internal modules,  so code that
-                     has these dependencies cannot use this interface.
-                     .
-                     New code should,  for the most part,  use the new
-                     interface.   However, this module does implement
-                     a chunked HTTP encoding,  which is not otherwise
-                     implemented (yet?) with the new builder.
+    This library allows to efficiently serialize Haskell values to lazy bytestrings
+    with a large average chunk size. The large average chunk size allows to make
+    good use of cache prefetching in later processing steps (e.g. compression) and
+    reduces the system call overhead when writing the resulting lazy bytestring to a
+    file or sending it over the network.
+    .
+    This library was inspired by the module Data.Binary.Builder provided by the
+    binary package. It was originally developed with the specific needs of the
+    blaze-html package in mind. Since then it has been restructured to serve as a
+    drop-in replacement for Data.Binary.Builder, which it improves upon both in
+    speed as well as expressivity.
 
 Author:              Jasper Van der Jeugt, Simon Meier, Leon P Smith
 Copyright:           (c) 2010-2014 Simon Meier
                      (c) 2010 Jasper Van der Jeugt
                      (c) 2013-2015 Leon P Smith
-Maintainer:          Leon Smith <leon@melding-monads.com>
+Maintainer:          https://github.com/blaze-builder
 
 License:             BSD3
 License-file:        LICENSE
 
-Homepage:            http://github.com/lpsmith/blaze-builder
-Bug-Reports:         http://github.com/lpsmith/blaze-builder/issues
-Stability:           Experimental
+Homepage:            https://github.com/blaze-builder/blaze-builder
+Bug-Reports:         https://github.com/blaze-builder/blaze-builder/issues
+Stability:           Stable
 
 Category:            Data
 Build-type:          Simple
@@ -66,7 +62,7 @@ Extra-source-files:
 
 Source-repository head
   Type: git
-  Location: https://github.com/lpsmith/blaze-builder.git
+  Location: https://github.com/blaze-builder/blaze-builder.git
 
 Library
   default-language:  Haskell98

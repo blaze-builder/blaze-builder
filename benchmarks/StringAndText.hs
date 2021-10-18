@@ -3,16 +3,16 @@
 -- Module      : StringAndText
 -- Copyright   : (c) 2010 Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : tested on GHC only
 --
 -- Benchmarking of String and Text serialization.
 module StringAndText (main)  where
 
 import Data.Char (ord)
-import Data.Monoid 
+import Data.Monoid
 
 import Criterion.Main
 
@@ -30,19 +30,19 @@ import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 
 main :: IO ()
-main = defaultMain 
+main = defaultMain
     [ bench "TL.unpack :: LazyText -> String" $ nf
         TL.unpack benchLazyText
 
     , bench "TL.foldr  :: LazyText -> String" $ nf
         (TL.foldr (:) []) benchLazyText
-    
+
     , bench "fromString :: String --[Utf8 encoding]--> L.ByteString" $ whnf
         (L.length . Blaze.toLazyByteString . Blaze.fromString) benchString
 
     , bench "fromStrictTextUnpacked :: StrictText --[Utf8 encoding]--> L.ByteString" $ whnf
         (L.length . Blaze.toLazyByteString . Blaze.fromText) benchStrictText
-     
+
     -- , bench "fromStrictTextFolded :: StrictText --[Utf8 encoding]--> L.ByteString" $ whnf
         -- (L.length . Blaze.toLazyByteString . fromStrictTextFolded) benchStrictText
 
@@ -63,10 +63,10 @@ main = defaultMain
 
     , bench "fromHtmlEscapedStrictTextUnpacked :: StrictText --[HTML esc. & Utf8 encoding]--> L.ByteString" $ whnf
         (L.length . Blaze.toLazyByteString . Blaze.fromHtmlEscapedText) benchStrictText
-     
+
     , bench "fromHtmlEscapedLazyTextUnpacked :: LazyText --[HTML esc. & Utf8 encoding]--> L.ByteString" $ whnf
         (L.length . Blaze.toLazyByteString . Blaze.fromHtmlEscapedLazyText) benchLazyText
-     
+
     ]
 
 n :: Int

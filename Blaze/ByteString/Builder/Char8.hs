@@ -3,8 +3,8 @@
 -- Module:      Blaze.ByteString.Builder.Char8
 -- Copyright:   (c) 2013 Leon P Smith
 -- License:     BSD3
--- Maintainer:  Leon P Smith <leon@melding-monads.com>
--- Stability:   experimental
+-- Maintainer:  https://github.com/blaze-builder
+-- Stability:   stable
 --
 -- //Note:// This package is intended for low-level use like implementing
 -- protocols. If you need to //serialize// Unicode characters use one of the

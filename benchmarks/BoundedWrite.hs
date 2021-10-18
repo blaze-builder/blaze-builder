@@ -3,9 +3,9 @@
 -- Module      : BoundedWrite
 -- Copyright   : (c) 2010 Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : tested on GHC only
 --
 -- A more general/efficient write type.
@@ -22,8 +22,8 @@ import qualified Data.ByteString.Internal as S
 import qualified Data.ByteString.Lazy as L
 
 import Blaze.ByteString.Builder.Internal
-import Blaze.ByteString.Builder.Write 
-import Blaze.ByteString.Builder.Word 
+import Blaze.ByteString.Builder.Write
+import Blaze.ByteString.Builder.Word
 
 import Criterion.Main
 
@@ -92,7 +92,7 @@ from3Chars = (mconcat . map (fromWriteSingleton (\(c1, c2, c3) -> writeChar c1 `
 ------------------------------------------------------------------------------
 
 -- * GRRR* GHC is too 'clever'... code where we branch and each branch should
--- execute a few IO actions and then return a value cannot be taught to GHC. 
+-- execute a few IO actions and then return a value cannot be taught to GHC.
 -- At least not such that it returns the value of the branches unpacked.
 --
 -- Hmm.. at least he behaves much better for the Monoid instance of BWrite
@@ -129,7 +129,7 @@ staticBWrite :: Int -> (Ptr Word8 -> IO ()) -> BWrite
 staticBWrite size io = BWrite size (execWriteSize io size)
 {-# INLINE staticBWrite #-}
 
-bwriteWord8 :: Word8 -> BWrite 
+bwriteWord8 :: Word8 -> BWrite
 bwriteWord8 x = staticBWrite 1 (`poke` x)
 {-# INLINE bwriteWord8 #-}
 
@@ -145,7 +145,7 @@ fromBWrite (BWrite size io) =
 {-# INLINE fromBWrite #-}
 
 fromBWriteSingleton :: (a -> BWrite) -> a -> Builder
-fromBWriteSingleton write = 
+fromBWriteSingleton write =
     mkPut
   where
     mkPut x = Builder step
@@ -238,4 +238,3 @@ encodeCharUtf8 f1 f2 f3 f4 c = case ord c of
                x4 = fromIntegral $ (x .&. 0x3F) + 0x80
            in f4 x1 x2 x3 x4
 {-# INLINE encodeCharUtf8 #-}
-

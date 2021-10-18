@@ -3,9 +3,9 @@
 -- Module      : ChunkedWrite
 -- Copyright   : (c) 2010 Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : tested on GHC only
 --
 -- Test different strategies for writing lists of simple values:
@@ -32,53 +32,53 @@ import qualified Blaze.ByteString.Builder           as BB
 import qualified Blaze.ByteString.Builder.Char.Utf8 as BB
 
 main :: IO ()
-main = defaultMain 
-    [ bench "S.pack: [Word8] -> S.ByteString" $ 
+main = defaultMain
+    [ bench "S.pack: [Word8] -> S.ByteString" $
         whnf (S.pack) word8s
 
-    , bench "toByteString . fromWord8s: [Word8] -> Builder -> S.ByteString" $ 
+    , bench "toByteString . fromWord8s: [Word8] -> Builder -> S.ByteString" $
         whnf (BB.toByteString . BB.fromWord8s) word8s
 
-    , bench "L.pack: [Word8] -> L.ByteString" $ 
+    , bench "L.pack: [Word8] -> L.ByteString" $
         whnf (L.length . L.pack) word8s
 
-    , bench "mconcat . map fromByte: [Word8] -> Builder -> L.ByteString" $ 
+    , bench "mconcat . map fromByte: [Word8] -> Builder -> L.ByteString" $
         whnf benchMConcatWord8s word8s
-    , bench "fromWrite1List: [Word8] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite1List: [Word8] -> Builder -> L.ByteString" $
         whnf bench1Word8s word8s
-    , bench "fromWrite2List: [Word8] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite2List: [Word8] -> Builder -> L.ByteString" $
         whnf bench2Word8s word8s
-    , bench "fromWrite4List: [Word8] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite4List: [Word8] -> Builder -> L.ByteString" $
         whnf bench4Word8s word8s
-    , bench "fromWrite8List: [Word8] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite8List: [Word8] -> Builder -> L.ByteString" $
         whnf bench8Word8s word8s
-    , bench "fromWrite16List: [Word8] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite16List: [Word8] -> Builder -> L.ByteString" $
         whnf bench16Word8s word8s
 
-    , bench "mconcat . map fromByte: [Char] -> Builder -> L.ByteString" $ 
+    , bench "mconcat . map fromByte: [Char] -> Builder -> L.ByteString" $
         whnf benchMConcatChars chars
-    , bench "fromWrite1List: [Char] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite1List: [Char] -> Builder -> L.ByteString" $
         whnf bench1Chars chars
-    , bench "fromWrite2List: [Char] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite2List: [Char] -> Builder -> L.ByteString" $
         whnf bench2Chars chars
-    , bench "fromWrite4List: [Char] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite4List: [Char] -> Builder -> L.ByteString" $
         whnf bench4Chars chars
-    , bench "fromWrite8List: [Char] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite8List: [Char] -> Builder -> L.ByteString" $
         whnf bench8Chars chars
-    , bench "fromWrite16List: [Char] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite16List: [Char] -> Builder -> L.ByteString" $
         whnf bench16Chars chars
 
-    , bench "mconcat . map fromWord32host: [Word32] -> Builder -> L.ByteString" $ 
+    , bench "mconcat . map fromWord32host: [Word32] -> Builder -> L.ByteString" $
         whnf benchMConcatWord32s word32s
-    , bench "fromWrite1List: [Word32] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite1List: [Word32] -> Builder -> L.ByteString" $
         whnf bench1Word32s word32s
-    , bench "fromWrite2List: [Word32] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite2List: [Word32] -> Builder -> L.ByteString" $
         whnf bench2Word32s word32s
-    , bench "fromWrite4List: [Word32] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite4List: [Word32] -> Builder -> L.ByteString" $
         whnf bench4Word32s word32s
-    , bench "fromWrite8List: [Word32] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite8List: [Word32] -> Builder -> L.ByteString" $
         whnf bench8Word32s word32s
-    , bench "fromWrite16List: [Word32] -> Builder -> L.ByteString" $ 
+    , bench "fromWrite16List: [Word32] -> Builder -> L.ByteString" $
         whnf bench16Word32s word32s
     ]
   where
@@ -155,4 +155,3 @@ bench8Word32s = L.length . BB.toLazyByteString . BB.fromWrite8List BB.writeWord3
 
 bench16Word32s :: [Word32] -> Int64
 bench16Word32s = L.length . BB.toLazyByteString . BB.fromWrite16List BB.writeWord32host
-

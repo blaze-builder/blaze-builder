@@ -5,8 +5,8 @@
 -- Copyright   : Simon Meier
 -- License     : BSD3-style (see LICENSE)
 --
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : GHC
 --
 -- Measure the scaling behaviour of a benchmarkable function.
@@ -494,4 +494,3 @@ mangle = concatMap (replace ((==) '-' . head) "-")
        . map (replace isSpace '-' . replace (==pathSeparator) '-' . toLower)
     where replace p r c | p c       = r
                         | otherwise = c
-

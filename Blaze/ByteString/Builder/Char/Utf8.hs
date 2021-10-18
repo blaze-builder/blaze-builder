@@ -3,8 +3,8 @@
 -- Module:      Blaze.ByteString.Builder.Char.Utf8
 -- Copyright:   (c) 2013 Leon P Smith
 -- License:     BSD3
--- Maintainer:  Leon P Smith <leon@melding-monads.com>
--- Stability:   experimental
+-- Maintainer:  https://github.com/blaze-builder
+-- Stability:   stable
 --
 -- 'Write's and 'Builder's for serializing Unicode characters using the UTF-8
 -- encoding.

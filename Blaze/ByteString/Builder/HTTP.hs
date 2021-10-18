@@ -4,8 +4,8 @@
 -- Module:      Blaze.ByteString.Builder.HTTP
 -- Copyright:   (c) 2013 Simon Meier
 -- License:     BSD3
--- Maintainer:  Leon P Smith <leon@melding-monads.com>
--- Stability:   experimental
+-- Maintainer:  https://github.com/blaze-builder
+-- Stability:   stable
 --
 -- Support for HTTP response encoding.
 --

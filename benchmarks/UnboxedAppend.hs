@@ -3,9 +3,9 @@
 -- Module      : UnboxedAppend
 -- Copyright   : (c) 2010 Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : tested on GHC only
 --
 -- Try using unboxed pointers for the continuation calls to make abstract
@@ -85,7 +85,7 @@ data PutSignal a =
       {-# UNPACK #-} !(Ptr Word8)
                      !(PutStep a)
   | InsertByteString
-      {-# UNPACK #-} !(Ptr Word8) 
+      {-# UNPACK #-} !(Ptr Word8)
                      !S.ByteString
                      !(PutStep a)
 
@@ -138,7 +138,7 @@ unboxBuildStep step op ope = step (BufRange (uptrToPtr op) (uptrToPtr ope))
 {-# INLINE unboxBuildStep #-}
 
 fromWriteSingleton :: (a -> Write) -> a -> Builder
-fromWriteSingleton write = 
+fromWriteSingleton write =
     mkBuilder
   where
     mkBuilder x = fromBuildStep step
@@ -148,7 +148,7 @@ fromWriteSingleton write =
               io pf
               let !br' = BufRange (pf `plusPtr` size) pe
               callBuildStep k br'
-          | otherwise               = 
+          | otherwise               =
               return $ BufferFull size pf (unboxBuildStep $ step k)
           where
             Write size io = write x
@@ -175,11 +175,11 @@ allocBuffer size = do
     return $! Buffer fpbuf pbuf pbuf (pbuf `plusPtr` size)
 
 unsafeFreezeBuffer :: Buffer -> S.ByteString
-unsafeFreezeBuffer (Buffer fpbuf p0 op _) = 
+unsafeFreezeBuffer (Buffer fpbuf p0 op _) =
     S.PS fpbuf 0 (op `minusPtr` p0)
 
 unsafeFreezeNonEmptyBuffer :: Buffer -> Maybe S.ByteString
-unsafeFreezeNonEmptyBuffer (Buffer fpbuf p0 op _) 
+unsafeFreezeNonEmptyBuffer (Buffer fpbuf p0 op _)
   | p0 == op  = Nothing
   | otherwise = Just $ S.PS fpbuf 0 (op `minusPtr` p0)
 
@@ -188,7 +188,7 @@ nextSlice minSize (Buffer fpbuf _ op ope)
   | ope `minusPtr` op <= minSize = Nothing
   | otherwise                    = Just (Buffer fpbuf op op ope)
 
-runPut :: Monad m 
+runPut :: Monad m
        => (IO (PutSignal a) -> m (PutSignal a)) -- lifting of buildsteps
        -> (Int -> Buffer -> m Buffer) -- output function for a guaranteedly non-empty buffer, the returned buffer will be filled next
        -> (S.ByteString -> m ())    -- output function for guaranteedly non-empty bytestrings, that are inserted directly into the stream
@@ -203,7 +203,7 @@ runPut liftIO outputBuf outputBS (Put put) =
     runStep step buf@(Buffer fpbuf p0 op ope) = do
         let !br = BufRange op ope
         signal <- liftIO $ callBuildStep step br
-        case signal of 
+        case signal of
             Done op' x ->         -- put completed, buffer partially runSteped
                 return (x, Buffer fpbuf p0 op' ope)
 
@@ -222,7 +222,7 @@ runPut liftIO outputBuf outputBS (Put put) =
                   outputBS bs
                   runStep nextStep buf'
 {-# INLINE runPut #-}
-              
+
 -- | A monad for lazily composing lazy bytestrings using continuations.
 newtype LBSM a = LBSM { unLBSM :: (a, L.ByteString -> L.ByteString) }
 
@@ -234,7 +234,7 @@ instance Monad LBSM where
 -- | Execute a put and return the written buffers as the chunks of a lazy
 -- bytestring.
 toLazyByteString2 :: Put a -> L.ByteString
-toLazyByteString2 put = 
+toLazyByteString2 put =
     k (bufToLBSCont (snd result) L.empty)
   where
     -- initial buffer

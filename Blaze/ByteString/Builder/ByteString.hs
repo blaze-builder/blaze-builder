@@ -3,8 +3,8 @@
 -- Module:      Blaze.ByteString.Builder.ByteString
 -- Copyright:   (c) 2013 Leon P Smith
 -- License:     BSD3
--- Maintainer:  Leon P Smith <leon@melding-monads.com>
--- Stability:   experimental
+-- Maintainer:  https://github.com/blaze-builder
+-- Stability:   stable
 --
 -- 'Write's and 'B.Builder's for strict and lazy bytestrings.
 --

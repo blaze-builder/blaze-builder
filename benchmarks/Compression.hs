@@ -2,9 +2,9 @@
 -- Module      : Compression
 -- Copyright   : (c) 2010 Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : tested on GHC only
 --
 -- Benchmark the effect of first compacting the input stream for the 'zlib'
@@ -27,7 +27,7 @@ import qualified Data.ByteString.Char8 as S
 import qualified Blaze.ByteString.Builder as B
 import Codec.Compression.GZip
 
-main = defaultMain 
+main = defaultMain
     [ bench "compress directly (chunksize 10)" $
         whnf benchCompressDirectly byteString10
     , bench "compress compacted (chunksize 10)" $
@@ -51,5 +51,5 @@ benchCompressDirectly :: L.ByteString -> Int64
 benchCompressDirectly = L.length . compress
 
 benchCompressCompacted :: L.ByteString -> Int64
-benchCompressCompacted = 
+benchCompressCompacted =
   L.length . compress . B.toLazyByteString . B.fromLazyByteString

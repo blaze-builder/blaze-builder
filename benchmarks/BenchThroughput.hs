@@ -3,9 +3,9 @@
 -- Module      : BenchThroughput
 -- Copyright   : Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : GHC
 --
 -- This benchmark is based on 'tests/Benchmark.hs' from the 'binary-0.5.0.2'
@@ -69,32 +69,32 @@ supportAllSizes f wS cS e i = return $ f wS cS e i
 blazeLineStyle = solidLine 1 . opaque
 binaryLineStyle = dashedLine 1 [5, 5] . opaque
 
-blazeBuilder      = 
+blazeBuilder      =
   ( "BlazeBuilder"
   , blazeLineStyle green
   , supportAllSizes $ BlazeBuilder.serialize)
 
-blazeBuilderDecl  = 
+blazeBuilderDecl  =
   ( "BlazeBuilderDecl"
   , blazeLineStyle blue
   , supportAllSizes $ BlazeBuilderDecl.serialize)
 
-blazePut          = 
+blazePut          =
   ( "BlazePut"
   , blazeLineStyle red
   , supportAllSizes $ BlazePut.serialize)
 
-binaryBuilder     = 
+binaryBuilder     =
   ( "BinaryBuilder"
   , binaryLineStyle green
   , supportAllSizes $ BinaryBuilder.serialize)
 
-binaryBuilderDecl = 
+binaryBuilderDecl =
   ( "BinaryBuilderDecl"
   , binaryLineStyle blue
   , BinaryBuilderDecl.serialize)
 
-binaryPut  = 
+binaryPut  =
   ( "BinaryPut"
   , binaryLineStyle red
   , supportAllSizes $ BinaryPut.serialize)
@@ -103,11 +103,11 @@ binaryPut  =
 main :: IO ()
 main = do
   mb <- getArgs >>= readIO . head
-  -- memBench (mb*10) 
+  -- memBench (mb*10)
   putStrLn ""
   putStrLn "Binary serialisation benchmarks:"
 
-  -- do bytewise 
+  -- do bytewise
   -- sequence_
     -- [ test wordSize chunkSize Host mb
     -- | wordSize  <- [1]
@@ -116,15 +116,15 @@ main = do
 
   -- now Word16 .. Word64
   let lift f wS cS e i = return $ f wS cS e i
-      serializers = 
+      serializers =
         [ blazeBuilder , blazeBuilderDecl , blazePut
         , binaryBuilder, binaryBuilderDecl, binaryPut
         ]
       wordSizes  = [1,2,4,8]
-      chunkSizes = [1,2,4,8,16] 
+      chunkSizes = [1,2,4,8,16]
       endians    = [Host,Big,Little]
 
-  let compares = 
+  let compares =
         [ compareResults serialize wordSize chunkSize end mb
         | wordSize  <- wordSizes
         , chunkSize <- chunkSizes
@@ -136,7 +136,7 @@ main = do
   -- sequence_ compares
 
 
-  let serializes = 
+  let serializes =
         [  [ ( serialize
              , [ (chunkSize, test serialize wordSize chunkSize end mb)
                | chunkSize <- [1,2,4,8,16]
@@ -160,20 +160,20 @@ mkChart task = do
   let plottedLines = flip map lines $ \ ((name,lineStyle,_), points) ->
           plot_lines_title ^= name $
           plot_lines_style ^= lineStyle $
-          plot_lines_values ^= [points] $ 
+          plot_lines_values ^= [points] $
           defaultPlotLines
-  let layout = 
+  let layout =
         defaultLayout1
           { layout1_plots_ = map (Right . toPlot) plottedLines }
   return ()
-  -- renderableToWindow (toRenderable layout) 640 480  
+  -- renderableToWindow (toRenderable layout) 640 480
 
 
 measureSerializer :: (a, [(Int, IO (Maybe Double))]) -> IO (Maybe (a, [(Int,Double)]))
 measureSerializer (info, tests) = do
   optPoints <- forM tests $ \ (x, test) -> do
     optY <- test
-    case optY of 
+    case optY of
       Nothing -> return Nothing
       Just y  -> return $ Just (x, y)
   case catMaybes optPoints of
@@ -191,7 +191,7 @@ time action = do
 
 ------------------------------------------------------------------------
 
-test :: (String, a, Int -> Int -> Endian -> Int -> Maybe L.ByteString) 
+test :: (String, a, Int -> Int -> Endian -> Int -> Maybe L.ByteString)
      -> Int -> Int -> Endian -> Int -> IO (Maybe Double)
 test (serializeName, _, serialize) wordSize chunkSize end mb = do
     let bytes :: Int
@@ -213,13 +213,13 @@ test (serializeName, _, serialize) wordSize chunkSize end mb = do
                putThroughput
                -- getThroughput
                -- (getThroughput/putThroughput)
-     
+
         hFlush stdout
         return $ Just putThroughput
 
 ------------------------------------------------------------------------
 
-compareResults :: (String, a, Int -> Int -> Endian -> Int -> Maybe L.ByteString) 
+compareResults :: (String, a, Int -> Int -> Endian -> Int -> Maybe L.ByteString)
      -> Int -> Int -> Endian -> Int -> IO ()
 compareResults (serializeName, _, serialize) wordSize chunkSize end mb0 = do
     let mb :: Int
@@ -233,8 +233,7 @@ compareResults (serializeName, _, serialize) wordSize chunkSize end mb0 = do
       Just bs1 -> do
         _ <- printf "%17s: %dMB of Word%-2d in chunks of %2d (%6s endian):"
           serializeName (mb :: Int) (8 * wordSize :: Int) (chunkSize :: Int) (show end)
-        if (bs0 == bs1) 
+        if (bs0 == bs1)
           then putStrLn " Ok"
           else putStrLn " Failed"
         hFlush stdout
-      

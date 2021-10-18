@@ -3,9 +3,9 @@
 -- Module      : BlazeVsBinary
 -- Copyright   : (c) 2010 Jasper Van der Jeught & Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : tested on GHC only
 --
 -- A comparison between 'blaze-builder' and the Data.Binary.Builder from

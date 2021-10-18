@@ -3,9 +3,9 @@
 -- Module      : PlotTest
 -- Copyright   : Simon Meier
 -- License     : BSD3-style (see LICENSE)
--- 
--- Maintainer  : Leon P Smith <leon@melding-monads.com>
--- Stability   : experimental
+--
+-- Maintainer  : https://github.com/blaze-builder
+-- Stability   : stable
 -- Portability : GHC
 --
 -- Test plotting for the benchmarks.
@@ -67,7 +67,7 @@ Throughput:
 -- | A pseudo-random stream of 'Word8' always started from the same initial
 -- seed.
 randomWord8s :: [Word8]
-randomWord8s = map fromIntegral $ unfoldr (Just . R.next) (R.mkStdGen 666) 
+randomWord8s = map fromIntegral $ unfoldr (Just . R.next) (R.mkStdGen 666)
 
 -- Main function
 ----------------
@@ -83,14 +83,14 @@ type MyCriterion a = ReaderT Environment Criterion a
 
 -- | Run a list of benchmarks; flattening benchmark groups to a path of strings.
 runFlattenedBenchmarks :: [Benchmark] -> MyCriterion [([String],Sample)]
-runFlattenedBenchmarks = 
+runFlattenedBenchmarks =
     (concat `liftM`) . mapM (go id)
   where
     go path (Benchmark name b)   = do
       env <- ask
       sample <- lift $ runBenchmark env b
       return [(path [name], sample)]
-    go path (BenchGroup name bs) = 
+    go path (BenchGroup name bs) =
       concat `liftM` mapM (go (path . (name:))) bs
 
 -- | Run a benchmark for a series of data points; e.g. to measure scalability
@@ -106,7 +106,7 @@ runMyCriterion :: Config -> MyCriterion a -> IO a
 runMyCriterion config criterion = do
     env <- withConfig config measureEnvironment
     withConfig config (runReaderT criterion env)
-    
+
 
 
 -- Plotting Infrastructure
@@ -116,7 +116,7 @@ colorPalette :: [Colour Double]
 colorPalette = [blue, green, red, yellow, magenta, cyan]
 
 lineStylePalette :: [CairoLineStyle]
-lineStylePalette = 
+lineStylePalette =
     map (solidLine 1 . opaque)         colorPalette ++
     map (dashedLine 1 [5, 5] . opaque) colorPalette
 
@@ -125,7 +125,7 @@ type PlotData = ((String, String, String), [(String, [(Int, Double)])])
 
 layoutPlot :: PlotData -> Layout1 Int Double
 layoutPlot ((title, xName, yName), lines) =
-    layout1_plots ^= map (Right . toPlot) plots $ 
+    layout1_plots ^= map (Right . toPlot) plots $
     layout1_title ^= title $
     layout1_bottom_axis ^= mkLinearAxis xName $
     layout1_right_axis ^= mkLogAxis yName $
@@ -136,18 +136,18 @@ layoutPlot ((title, xName, yName), lines) =
 
 -- | Plot a single named line using the given line style.
 plotLine :: String -> CairoLineStyle -> [(Int,Double)] -> PlotLines Int Double
-plotLine name style points = 
+plotLine name style points =
     plot_lines_title ^= name $
     plot_lines_style ^= style $
-    plot_lines_values ^= [points] $ 
+    plot_lines_values ^= [points] $
     defaultPlotLines
 
 mkLinearAxis :: String -> LayoutAxis Int
 mkLinearAxis name = laxis_title ^= name $ defaultLayoutAxis
 
 mkLogAxis :: String -> LayoutAxis Double
-mkLogAxis name = 
-  laxis_title ^= name $ 
+mkLogAxis name =
+  laxis_title ^= name $
   laxis_generate ^= autoScaledLogAxis defaultLogAxis $
   defaultLayoutAxis
 
@@ -169,12 +169,12 @@ binaryLineStyle = dashedLine 1 [5, 5] . opaque
 
 
 plots :: [PlotLines Int Double]
-plots = [ plotLine [c] style testData 
+plots = [ plotLine [c] style testData
         | (c, style) <- zip ['a'..] (cycle lineStylePalette) ]
 
 
-mkLayout xname yname title p = 
-    layout1_plots ^= [Right p] $ 
+mkLayout xname yname title p =
+    layout1_plots ^= [Right p] $
     layout1_title ^= title $
     layout1_bottom_axis ^= mkLinearAxis xname $
     layout1_right_axis ^= mkLogAxis yname $
@@ -196,19 +196,19 @@ mkChart task = do
   let plottedLines = flip map lines $ \ ((name,lineStyle,_), points) ->
           plot_lines_title ^= name $
           plot_lines_style ^= lineStyle $
-          plot_lines_values ^= [points] $ 
+          plot_lines_values ^= [points] $
           defaultPlotLines
-  let layout = 
+  let layout =
         defaultLayout1
           { layout1_plots_ = map (Right . toPlot) plottedLines }
-  renderableToWindow (toRenderable layout) 640 480  
+  renderableToWindow (toRenderable layout) 640 480
 
 
 measureSerializer :: (a, [(Int, IO (Maybe Double))]) -> IO (Maybe (a, [(Int,Double)]))
 measureSerializer (info, tests) = do
   optPoints <- forM tests $ \ (x, test) -> do
     optY <- test
-    case optY of 
+    case optY of
       Nothing -> return Nothing
       Just y  -> return $ Just (x, y)
   case catMaybes optPoints of
