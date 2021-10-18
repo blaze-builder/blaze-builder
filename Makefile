@@ -6,12 +6,9 @@
 ## Config
 #########
 
-GHC6 = ghc-6.12.3
-GHC7 = ghc-7.0.2
+GHC = ghc
 
-GHC = $(GHC7)
-
-GHCI = ghci-6.12.3
+GHCI = ghci
 
 
 ## All benchmarks
@@ -51,7 +48,7 @@ bench-blaze-vs-binary:
 	./benchmarks/BlazeVsBinary --resamples 10000
 
 # throughput benchmarks: interactive development
-ghci-throughput: benchmarks/Throughput/CBenchmark.o 
+ghci-throughput: benchmarks/Throughput/CBenchmark.o
 	$(GHCI) -O2 -fforce-recomp -ibenchmarks -main-is BenchThroughput benchmarks/Throughput/CBenchmark.o benchmarks/BenchThroughput.hs
 
 bench-throughput: benchmarks/Throughput/CBenchmark.o
@@ -146,11 +143,11 @@ test:
 clean-tests:
 	rm -f tests/Tests tests/*.o tests/*.hi
 
-ghci-llvm-segfault: 
-	$(GHCI) -itests -main-is LlvmSegfault tests/LlvmSegfault 
+ghci-llvm-segfault:
+	$(GHCI) -itests -main-is LlvmSegfault tests/LlvmSegfault
 
-test-llvm-segfault: 
-	ghc-7.0.0.20100924 --make -fllvm -itests -main-is LlvmSegfault tests/LlvmSegfault 
+test-llvm-segfault:
+	ghc-7.0.0.20100924 --make -fllvm -itests -main-is LlvmSegfault tests/LlvmSegfault
 	./tests/LlvmSegfault
 
 ##############################################################################
