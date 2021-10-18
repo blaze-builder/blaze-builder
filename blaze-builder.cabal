@@ -69,7 +69,6 @@ Source-repository head
   Location: https://github.com/lpsmith/blaze-builder.git
 
 Library
-  ghc-options:       -Wall
   default-language:  Haskell98
 
   exposed-modules:   Blaze.ByteString.Builder
@@ -99,12 +98,18 @@ Library
   if impl(ghc < 8.0)
      build-depends: semigroups >= 0.16 && < 0.20
 
+  ghc-options:       -Wall
+  if impl(ghc >= 8.0)
+    ghc-options:     -Wcompat
+
 test-suite test
   type:             exitcode-stdio-1.0
   hs-source-dirs:   tests
   main-is:          Tests.hs
   default-language: Haskell98
   ghc-options:      -Wall -fno-warn-orphans
+  if impl(ghc >= 8.0)
+    ghc-options:     -Wcompat
 
   build-depends: base
                , blaze-builder
