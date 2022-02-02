@@ -134,7 +134,7 @@ instance Monoid Poke where
 
 #if !(MIN_VERSION_base(4,11,0))
   {-# INLINE mappend #-}
-  (Poke po1) `mappend` (Poke po2) = Poke $ po1 >=> po2
+  mappend = (<>)
 
   {-# INLINE mconcat #-}
   mconcat = F.foldr mappend mempty
@@ -154,8 +154,7 @@ instance Monoid Write where
 
 #if !(MIN_VERSION_base(4,11,0))
   {-# INLINE mappend #-}
-  (Write bound1 w1) `mappend` (Write bound2 w2) =
-    Write (bound1 + bound2) (w1 `mappend` w2)
+  mappend = (<>)
 
   {-# INLINE mconcat #-}
   mconcat = F.foldr mappend mempty
