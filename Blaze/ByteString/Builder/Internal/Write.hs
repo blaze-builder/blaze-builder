@@ -75,7 +75,7 @@ import Data.Semigroup (Semigroup(..))
 
 -- | Changing a sequence of bytes starting from the given pointer. 'Poke's are
 -- the most primitive buffer manipulation. In most cases, you don't use the
--- explicitely but as part of a 'Write', which also tells how many bytes will
+-- explicitly but as part of a 'Write', which also tells how many bytes will
 -- be changed at most.
 newtype Poke =
     Poke { runPoke :: Ptr Word8 -> IO (Ptr Word8) }

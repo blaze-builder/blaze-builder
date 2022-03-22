@@ -61,7 +61,7 @@ fromByteString = B.byteString
 
 
 -- | Construct a 'B.Builder' that copies the strict 'S.ByteString's, if it is
--- smaller than the treshold, and inserts it directly otherwise.
+-- smaller than the threshold, and inserts it directly otherwise.
 --
 -- For example, @fromByteStringWith 1024@ copies strict 'S.ByteString's whose size
 -- is less or equal to 1kb, and inserts them directly otherwise. This implies
