@@ -291,7 +291,7 @@ defaultMaximalCopySize = 2 * defaultMinimalBufferSize
 -- When using 'toLazyByteString' to extract a lazy 'L.ByteString' from a
 -- 'Builder', this means that a new chunk will be started in the resulting lazy
 -- 'L.ByteString'. The remaining part of the buffer is spilled, if the
--- reamining free space is smaller than the minimal desired buffer size.
+-- remaining free space is smaller than the minimal desired buffer size.
 --
 {-
 flush :: Builder
