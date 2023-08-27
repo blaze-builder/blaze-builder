@@ -4,9 +4,11 @@ dist-newstyle/
 *.hi
 *.pdf
 *.png
+.ghc.environment.*
 
 cabal-dev/
 cabal.sandbox.config
+cabal.project.local
 
 benchmarks/BlazeVsBinary
 benchmarks/ChunkedWrite
