@@ -1,7 +1,6 @@
 {-# LANGUAGE CPP #-}
-#if __GLASGOW_HASKELL__ >= 704
+
 {-# OPTIONS_GHC -fsimpl-tick-factor=40000 #-}
-#endif
 
 ------------------------------------------------------------------------------
 -- |

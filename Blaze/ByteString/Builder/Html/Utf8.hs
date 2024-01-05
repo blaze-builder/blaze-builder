@@ -1,7 +1,6 @@
 {-# LANGUAGE CPP #-}
-#if __GLASGOW_HASKELL__ >= 704
+
 {-# OPTIONS_GHC -fsimpl-tick-factor=40000 #-}
-#endif
 
 ------------------------------------------------------------------------------
 -- |
@@ -104,17 +103,9 @@ fromHtmlEscapedShow = fromHtmlEscapedString . show
 -- UTF-8 encoding.
 --
 fromHtmlEscapedText :: TS.Text -> B.Builder
-#if MIN_VERSION_text(1,1,2) && MIN_VERSION_bytestring(0,10,4)
 fromHtmlEscapedText = TE.encodeUtf8BuilderEscaped wordHtmlEscaped
-#else
-fromHtmlEscapedText = fromHtmlEscapedString . TS.unpack
-#endif
 
 -- | /O(n)/. Serialize a HTML escaped Unicode 'TL.Text' using the UTF-8 encoding.
 --
 fromHtmlEscapedLazyText :: TL.Text -> B.Builder
-#if MIN_VERSION_text(1,1,2) && MIN_VERSION_bytestring(0,10,4)
 fromHtmlEscapedLazyText = TLE.encodeUtf8BuilderEscaped wordHtmlEscaped
-#else
-fromHtmlEscapedLazyText = fromHtmlEscapedString . TL.unpack
-#endif

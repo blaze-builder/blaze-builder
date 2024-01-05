@@ -40,11 +40,6 @@ import Blaze.ByteString.Builder.ByteString (copyByteString)
 
 import qualified Blaze.ByteString.Builder.Char8 as Char8
 
-#if !MIN_VERSION_base(4,8,0)
-import Data.Monoid
-#endif
-
-
 {-# INLINE shiftr_w32 #-}
 shiftr_w32 :: Word32 -> Int -> Word32
 

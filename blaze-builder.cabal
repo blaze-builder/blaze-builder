@@ -33,9 +33,9 @@ Build-type:          Simple
 Cabal-version:       >= 1.10
 
 Tested-with:
-  GHC == 9.8.0
-  GHC == 9.6.2
-  GHC == 9.4.7
+  GHC == 9.8.1
+  GHC == 9.6.3
+  GHC == 9.4.8
   GHC == 9.2.8
   GHC == 9.0.2
   GHC == 8.10.7
@@ -44,11 +44,6 @@ Tested-with:
   GHC == 8.4.4
   GHC == 8.2.2
   GHC == 8.0.2
-  GHC == 7.10.3
-  GHC == 7.8.4
-  GHC == 7.6.3
-  GHC == 7.4.2
-  GHC == 7.0.4
 
 Extra-source-files:
                      Makefile
@@ -84,32 +79,25 @@ Library
                      Blaze.ByteString.Builder.Internal.Write
 
   build-depends:
-      base       >= 4.3  && < 5
-    , bytestring >= 0.9  && < 1
+      base       >= 4.9    && < 5
+    , bytestring >= 0.10.4 && < 1
     , deepseq
     , ghc-prim
-    , text       >= 0.10 && < 3
+    , text       >= 1.1.2  && < 3
 
-  if impl(ghc < 7.8)
-     build-depends:  bytestring-builder
-  else
-     build-depends:  bytestring >= 0.10.4
-
-  if impl(ghc < 8.0)
-     build-depends:  semigroups >= 0.16 && < 0.20
-
-  ghc-options:       -Wall
-  if impl(ghc >= 8.0)
-    ghc-options:     -Wcompat
+  ghc-options:
+    -Wall
+    -Wcompat
 
 test-suite test
   type:             exitcode-stdio-1.0
   hs-source-dirs:   tests
   main-is:          Tests.hs
   default-language: Haskell98
-  ghc-options:      -Wall -fno-warn-orphans
-  if impl(ghc >= 8.0)
-    ghc-options:     -Wcompat
+  ghc-options:
+    -Wall
+    -Wno-orphans
+    -Wcompat
 
   build-depends: base
                , blaze-builder

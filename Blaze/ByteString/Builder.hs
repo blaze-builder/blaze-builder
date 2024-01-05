@@ -92,12 +92,8 @@ module Blaze.ByteString.Builder
 
 import Control.Monad(unless)
 
-#if __GLASGOW_HASKELL__ >= 702
 import Foreign
 import qualified Foreign.ForeignPtr.Unsafe as Unsafe
-#else
-import Foreign as Unsafe
-#endif
 
 import qualified Blaze.ByteString.Builder.Internal.Write as W
 import           Blaze.ByteString.Builder.ByteString
@@ -113,12 +109,7 @@ import qualified Data.ByteString.Internal      as S
 import qualified Data.ByteString.Lazy          as L
 import qualified Data.ByteString.Lazy.Internal as L
 
-#if __GLASGOW_HASKELL__ >= 702
 import System.IO.Unsafe (unsafeDupablePerformIO)
-#else
-unsafeDupablePerformIO :: IO a -> a
-unsafeDupablePerformIO = unsafePerformIO
-#endif
 
 withBS :: S.ByteString -> (ForeignPtr Word8 -> Int -> Int -> a) -> a
 #if MIN_VERSION_bytestring(0,11,0)
