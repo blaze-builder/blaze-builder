@@ -98,9 +98,14 @@ word32HexLength :: Word32 -> Int
 word32HexLength = max 1 . iterationsUntilZero (`shiftr_w32` 4)
 {-# INLINE word32HexLength #-}
 
+-- | Maximum length of a hex string encoding any 'Word32'.
+--   Same as @word32HexLength maxBound@.
+maxWord32HexLength :: Int
+maxWord32HexLength = 8
+
 writeWord32Hex :: Word32 -> Write
 writeWord32Hex w =
-    boundedWrite (2 * sizeOf w) (pokeN len $ pokeWord32HexN len w)
+    boundedWrite maxWord32HexLength (pokeN len $ pokeWord32HexN len w)
   where
     len = word32HexLength w
 {-# INLINE writeWord32Hex #-}
@@ -181,10 +186,14 @@ chunkedTransferEncoding innerBuilder =
             -- builders.
             minimalChunkSize  = 1
 
-            -- overhead computation
-            maxBeforeBufferOverhead = sizeOf (undefined :: Int) + 2 -- max chunk size and CRLF after header
-            maxAfterBufferOverhead  = 2 +                           -- CRLF after data
-                                      sizeOf (undefined :: Int) + 2 -- max bytestring size, CRLF after header
+            -- overhead computation which is when (re)sizing the output buffer.
+            -- We make sure we have enough space
+            -- - at the beginning of the chunk for the chunk length followed by CRLF
+            -- - at the end of the chunk for the terminating CRLF and
+            --   the chunk header (see above) of the next chunk.
+            crlfLength = 2
+            maxBeforeBufferOverhead = maxWord32HexLength + crlfLength
+            maxAfterBufferOverhead  = crlfLength + maxWord32HexLength + crlfLength
 
             maxEncodingOverhead = maxBeforeBufferOverhead + maxAfterBufferOverhead
 
