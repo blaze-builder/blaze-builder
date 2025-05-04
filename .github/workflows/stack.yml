@@ -22,10 +22,12 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         plan:
-          - ghc: '9.8.2'
-            resolver: 'nightly-2024-09-20'
-          - ghc: '9.6.6'
-            resolver: 'lts-22.34'
+          - ghc: '9.10.1'
+            resolver: 'nightly-2025-05-02'
+          - ghc: '9.8.4'
+            resolver: 'lts-23.20'
+          - ghc: '9.6.7'
+            resolver: 'lts-22.44'
           - ghc: '9.4.8'
             resolver: 'lts-21.25'
           - ghc: '9.2.8'
@@ -44,21 +46,21 @@ jobs:
         include:
           - os: windows-latest
             plan:
-              resolver: 'nightly-2024-09-20'
-              ghc: '9.8.2'
+              resolver: 'nightly-2025-05-02'
+              ghc: '9.10.1'
           - os: windows-latest
             plan:
-              resolver: 'lts-22.34'
-              ghc: '9.6.6'
+              resolver: 'lts-22.44'
+              ghc: '9.6.7'
 
           - os: macos-latest
             plan:
-              resolver: 'nightly-2024-09-20'
-              ghc: '9.8.2'
+              resolver: 'nightly-2025-05-02'
+              ghc: '9.10.1'
           - os: macos-latest
             plan:
-              resolver: 'lts-22.34'
-              ghc: '9.6.6'
+              resolver: 'lts-22.44'
+              ghc: '9.6.7'
 
     runs-on: ${{ matrix.os }}
     env:
