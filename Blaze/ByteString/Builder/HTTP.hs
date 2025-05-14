@@ -129,8 +129,8 @@ chunkedTransferEncoding innerBuilder =
               return $ bufferFull minimalBufferSize op (go innerStep)
           | otherwise = do
               let !brInner@(BufferRange opInner _) = BufferRange
-                     (op  `plusPtr` (chunkSizeLength + 2))     -- leave space for chunk header
-                     (ope `plusPtr` (-maxAfterBufferOverhead)) -- leave space at end of data
+                     (op  `plusPtr` (chunkSizeLength + crlfLength)) -- leave space for chunk header
+                     (ope `plusPtr` (-maxAfterBufferOverhead))      -- leave space at end of data
 
                   -- wraps the chunk, if it is non-empty, and returns the
                   -- signal constructed with the correct end-of-data pointer
@@ -143,9 +143,9 @@ chunkedTransferEncoding innerBuilder =
                         pokeWord32HexN chunkSizeLength
                             (fromIntegral $ opInner' `minusPtr` opInner)
                             op
-                        execWrite writeCRLF (opInner `plusPtr` (-2))
+                        execWrite writeCRLF (opInner `plusPtr` (-crlfLength))
                         execWrite writeCRLF opInner'
-                        mkSignal (opInner' `plusPtr` 2)
+                        mkSignal (opInner' `plusPtr` crlfLength)
 
                   -- prepare handlers
                   doneH opInner' _ = wrapChunk opInner' $ \op' -> do
