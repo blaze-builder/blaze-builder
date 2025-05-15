@@ -1,5 +1,8 @@
-* Unreleased
+* 0.4.3 2025-05-15
+  - Fix computation of max buffer overhead on 32 bit platforms
+    (sternenseemann, PR #8 https://github.com/blaze-builder/blaze-builder/pull/8)
   - Drop support for GHC 7, bytestring < 0.10.4 and text < 1.1.2
+  - Tested with GHC 8.0 - 9.12.2
 
 * 0.4.2.3 2023-08-27
   - Fix compilation warnings concerning non-canonical mappend
