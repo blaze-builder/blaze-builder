@@ -22,8 +22,8 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         plan:
-          - ghc: '9.10.1'
-            resolver: 'nightly-2025-05-02'
+          - ghc: '9.10.2'
+            resolver: 'nightly-2025-05-15'
           - ghc: '9.8.4'
             resolver: 'lts-23.20'
           - ghc: '9.6.7'
@@ -46,8 +46,8 @@ jobs:
         include:
           - os: windows-latest
             plan:
-              resolver: 'nightly-2025-05-02'
-              ghc: '9.10.1'
+              resolver: 'nightly-2025-05-15'
+              ghc: '9.10.2'
           - os: windows-latest
             plan:
               resolver: 'lts-22.44'
@@ -55,8 +55,8 @@ jobs:
 
           - os: macos-latest
             plan:
-              resolver: 'nightly-2025-05-02'
-              ghc: '9.10.1'
+              resolver: 'nightly-2025-05-15'
+              ghc: '9.10.2'
           - os: macos-latest
             plan:
               resolver: 'lts-22.44'
