@@ -29,7 +29,9 @@ import           Data.ByteString.Builder ( Builder )
 import qualified Data.ByteString.Builder as B
 import qualified Data.ByteString.Builder.Prim as P
 import qualified Data.Text      as TS
+import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.Encoding as TLE
 
 -- | Write a UTF-8 encoded Unicode character to a buffer.
 --
@@ -59,11 +61,11 @@ fromShow = fromString . show
 -- | /O(n)/. Serialize a strict Unicode 'TS.Text' value using the UTF-8 encoding.
 --
 fromText :: TS.Text -> Builder
-fromText = fromString . TS.unpack
+fromText = TE.encodeUtf8Builder
 {-# INLINE fromText #-}
 
 -- | /O(n)/. Serialize a lazy Unicode 'TL.Text' value using the UTF-8 encoding.
 --
 fromLazyText :: TL.Text -> Builder
-fromLazyText = fromString . TL.unpack
+fromLazyText = TLE.encodeUtf8Builder
 {-# INLINE fromLazyText #-}
