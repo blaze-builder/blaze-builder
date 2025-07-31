@@ -8,7 +8,7 @@ module BenchmarkServer where
 import Prelude hiding (putStrLn)
 
 import Data.Char   (ord)
-import Data.Monoid 
+import Data.Monoid
 import Data.ByteString.Char8 () -- IsString instance only
 import qualified Data.ByteString               as S
 import qualified Data.ByteString.Lazy          as L
@@ -16,7 +16,7 @@ import qualified Data.ByteString.Lazy.Internal as L
 
 import Control.Concurrent (forkIO, putMVar, takeMVar, newEmptyMVar)
 import Control.Exception  (bracket)
-import Control.Monad 
+import Control.Monad
 
 import Network.Socket   (Socket, accept, sClose)
 import Network          (listenOn, PortID (PortNumber))
@@ -31,15 +31,15 @@ import Blaze.ByteString.Builder.Char.Utf8
 
 import Criterion.Main
 
-httpOkHeader :: S.ByteString 
-httpOkHeader = S.concat 
+httpOkHeader :: S.ByteString
+httpOkHeader = S.concat
     [ "HTTP/1.1 200 OK\r\n"
     , "Content-Type: text/html; charset=UTF-8\r\n"
     , "\r\n" ]
 
 response :: Int -> Builder
-response n = 
-  fromByteString httpOkHeader `mappend` 
+response n =
+  fromByteString httpOkHeader `mappend`
   fromString (take n $ cycle "hello λ-world! ")
 
 sendVectoredBuilderLBS :: Socket -> Builder -> IO ()
@@ -47,7 +47,7 @@ sendVectoredBuilderLBS s = L.sendAll s . toLazyByteString
 {-# NOINLINE sendVectoredBuilderLBS #-}
 
 sendBuilderLBS :: Socket -> Builder -> IO ()
-sendBuilderLBS s = 
+sendBuilderLBS s =
   -- mapM_ (S.sendAll s) . L.toChunks . toLazyByteString
   L.foldrChunks (\c -> (S.sendAll s c >>)) (return ()). toLazyByteString
 {-# NOINLINE sendBuilderLBS #-}
@@ -58,7 +58,7 @@ sendBuilderBSIO s = toByteStringIO $ S.sendAll s
 
 -- criterion benchmark determining the speed of response
 main2 = defaultMain
-    [ bench ("response " ++ show n) $ whnf 
+    [ bench ("response " ++ show n) $ whnf
         (L.length . toLazyByteString . response) n
     ]
   where
@@ -69,12 +69,12 @@ main :: IO ()
 main = do
     [port, nChars] <- map read `liftM` getArgs
     killSignal <- newEmptyMVar
-    bracket (listenOn . PortNumber . fromIntegral $ port) sClose 
+    bracket (listenOn . PortNumber . fromIntegral $ port) sClose
         (\socket -> do
             _ <- forkIO $ loop (putMVar killSignal ()) nChars socket
             takeMVar killSignal)
   where
-    loop killServer nChars socket = forever $ do 
+    loop killServer nChars socket = forever $ do
         (s, _) <- accept socket
         forkIO (respond s nChars)
       where

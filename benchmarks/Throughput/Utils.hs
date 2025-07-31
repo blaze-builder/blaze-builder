@@ -1,5 +1,5 @@
 module Throughput.Utils (
-  Endian(..)  
+  Endian(..)
 ) where
 
 
@@ -8,5 +8,4 @@ data Endian
     | Little
     | Host
     deriving (Eq,Ord,Show)
-
 

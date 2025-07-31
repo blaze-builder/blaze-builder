@@ -195,7 +195,7 @@ writeWord16N16Big = loop 0
 writeWord16N1Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = mempty
-        loop s n = 
+        loop s n =
           (putWord16le (s+0)) `mappend`
           loop (s+1) (n-1)
 

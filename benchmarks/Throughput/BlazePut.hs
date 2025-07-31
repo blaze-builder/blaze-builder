@@ -2,7 +2,7 @@
 module Throughput.BlazePut (serialize) where
 
 import qualified Data.ByteString.Lazy as L
-import Blaze.ByteString.Builder 
+import Blaze.ByteString.Builder
 import Throughput.BlazePutMonad as Put
 import Data.Monoid
 
@@ -12,7 +12,7 @@ import Throughput.Utils
 ------------------------------------------------------------------------
 
 serialize :: Int -> Int -> Endian -> Int -> L.ByteString
-serialize wordSize chunkSize end = runPut . 
+serialize wordSize chunkSize end = runPut .
   case (wordSize, chunkSize, end) of
     (1, 1,_)   -> writeByteN1
     (1, 2,_)   -> writeByteN2
@@ -72,7 +72,7 @@ serialize wordSize chunkSize end = runPut .
 
 writeByteN1 bytes = loop 0 0
   where loop !s !n | n == bytes = return ()
-                   | otherwise  = do 
+                   | otherwise  = do
                        Put.putWrite ( writeWord8 s)
                        loop (s+1) (n+1)
 
@@ -88,7 +88,7 @@ writeByteN2 = loop 0
 writeByteN4 = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord8 (s+0) `mappend`
             writeWord8 (s+1) `mappend`
@@ -99,7 +99,7 @@ writeByteN4 = loop 0
 writeByteN8 = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord8 (s+0) `mappend`
             writeWord8 (s+1) `mappend`
@@ -114,7 +114,7 @@ writeByteN8 = loop 0
 writeByteN16 = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord8 (s+0) `mappend`
             writeWord8 (s+1) `mappend`
@@ -140,14 +140,14 @@ writeByteN16 = loop 0
 writeWord16N1Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWord16be (s+0)
           loop (s+1) (n-1)
 
 writeWord16N2Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16be (s+0) `mappend`
             writeWord16be (s+1))
@@ -156,7 +156,7 @@ writeWord16N2Big = loop 0
 writeWord16N4Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16be (s+0) `mappend`
             writeWord16be (s+1) `mappend`
@@ -167,7 +167,7 @@ writeWord16N4Big = loop 0
 writeWord16N8Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16be (s+0) `mappend`
             writeWord16be (s+1) `mappend`
@@ -182,7 +182,7 @@ writeWord16N8Big = loop 0
 writeWord16N16Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16be (s+0) `mappend`
             writeWord16be (s+1) `mappend`
@@ -208,14 +208,14 @@ writeWord16N16Big = loop 0
 writeWord16N1Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = 
+        loop s n =
           do Put.putWord16le (s+0)
              loop (s+1) (n-1)
 
 writeWord16N2Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16le (s+0) `mappend`
             writeWord16le (s+1))
@@ -224,7 +224,7 @@ writeWord16N2Little = loop 0
 writeWord16N4Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16le (s+0) `mappend`
             writeWord16le (s+1) `mappend`
@@ -235,7 +235,7 @@ writeWord16N4Little = loop 0
 writeWord16N8Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16le (s+0) `mappend`
             writeWord16le (s+1) `mappend`
@@ -250,7 +250,7 @@ writeWord16N8Little = loop 0
 writeWord16N16Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16le (s+0) `mappend`
             writeWord16le (s+1) `mappend`
@@ -276,14 +276,14 @@ writeWord16N16Little = loop 0
 writeWord16N1Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWord16host (s+0)
           loop (s+1) (n-1)
 
 writeWord16N2Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16host (s+0) `mappend`
             writeWord16host (s+1))
@@ -292,7 +292,7 @@ writeWord16N2Host = loop 0
 writeWord16N4Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16host (s+0) `mappend`
             writeWord16host (s+1) `mappend`
@@ -303,7 +303,7 @@ writeWord16N4Host = loop 0
 writeWord16N8Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16host (s+0) `mappend`
             writeWord16host (s+1) `mappend`
@@ -318,7 +318,7 @@ writeWord16N8Host = loop 0
 writeWord16N16Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord16host (s+0) `mappend`
             writeWord16host (s+1) `mappend`
@@ -343,14 +343,14 @@ writeWord16N16Host = loop 0
 writeWord32N1Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWord32be (s+0)
           loop (s+1) (n-1)
 
 writeWord32N2Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32be (s+0) `mappend`
             writeWord32be (s+1))
@@ -359,7 +359,7 @@ writeWord32N2Big = loop 0
 writeWord32N4Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32be (s+0) `mappend`
             writeWord32be (s+1) `mappend`
@@ -370,7 +370,7 @@ writeWord32N4Big = loop 0
 writeWord32N8Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32be (s+0) `mappend`
             writeWord32be (s+1) `mappend`
@@ -385,7 +385,7 @@ writeWord32N8Big = loop 0
 writeWord32N16Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32be (s+0) `mappend`
             writeWord32be (s+1) `mappend`
@@ -410,14 +410,14 @@ writeWord32N16Big = loop 0
 writeWord32N1Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWord32le (s+0)
           loop (s+1) (n-1)
 
 writeWord32N2Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32le (s+0) `mappend`
             writeWord32le (s+1))
@@ -426,7 +426,7 @@ writeWord32N2Little = loop 0
 writeWord32N4Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32le (s+0) `mappend`
             writeWord32le (s+1) `mappend`
@@ -437,7 +437,7 @@ writeWord32N4Little = loop 0
 writeWord32N8Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32le (s+0) `mappend`
             writeWord32le (s+1) `mappend`
@@ -452,7 +452,7 @@ writeWord32N8Little = loop 0
 writeWord32N16Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32le (s+0) `mappend`
             writeWord32le (s+1) `mappend`
@@ -477,14 +477,14 @@ writeWord32N16Little = loop 0
 writeWord32N1Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWord32host (s+0)
           loop (s+1) (n-1)
 
 writeWord32N2Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32host (s+0) `mappend`
             writeWord32host (s+1))
@@ -493,7 +493,7 @@ writeWord32N2Host = loop 0
 writeWord32N4Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32host (s+0) `mappend`
             writeWord32host (s+1) `mappend`
@@ -504,7 +504,7 @@ writeWord32N4Host = loop 0
 writeWord32N8Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32host (s+0) `mappend`
             writeWord32host (s+1) `mappend`
@@ -519,7 +519,7 @@ writeWord32N8Host = loop 0
 writeWord32N16Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord32host (s+0) `mappend`
             writeWord32host (s+1) `mappend`
@@ -544,14 +544,14 @@ writeWord32N16Host = loop 0
 writeWord64N1Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWord64be (s+0)
           loop (s+1) (n-1)
 
 writeWord64N2Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64be (s+0) `mappend`
             writeWord64be (s+1))
@@ -560,7 +560,7 @@ writeWord64N2Big = loop 0
 writeWord64N4Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64be (s+0) `mappend`
             writeWord64be (s+1) `mappend`
@@ -571,7 +571,7 @@ writeWord64N4Big = loop 0
 writeWord64N8Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64be (s+0) `mappend`
             writeWord64be (s+1) `mappend`
@@ -586,7 +586,7 @@ writeWord64N8Big = loop 0
 writeWord64N16Big = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64be (s+0) `mappend`
             writeWord64be (s+1) `mappend`
@@ -611,14 +611,14 @@ writeWord64N16Big = loop 0
 writeWord64N1Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWord64le (s+0)
           loop (s+1) (n-1)
 
 writeWord64N2Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64le (s+0) `mappend`
             writeWord64le (s+1))
@@ -627,7 +627,7 @@ writeWord64N2Little = loop 0
 writeWord64N4Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64le (s+0) `mappend`
             writeWord64le (s+1) `mappend`
@@ -638,7 +638,7 @@ writeWord64N4Little = loop 0
 writeWord64N8Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64le (s+0) `mappend`
             writeWord64le (s+1) `mappend`
@@ -653,7 +653,7 @@ writeWord64N8Little = loop 0
 writeWord64N16Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64le (s+0) `mappend`
             writeWord64le (s+1) `mappend`
@@ -678,14 +678,14 @@ writeWord64N16Little = loop 0
 writeWord64N1Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWord64host (s+0)
           loop (s+1) (n-1)
 
 writeWord64N2Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64host (s+0) `mappend`
             writeWord64host (s+1))
@@ -694,7 +694,7 @@ writeWord64N2Host = loop 0
 writeWord64N4Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64host (s+0) `mappend`
             writeWord64host (s+1) `mappend`
@@ -705,7 +705,7 @@ writeWord64N4Host = loop 0
 writeWord64N8Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64host (s+0) `mappend`
             writeWord64host (s+1) `mappend`
@@ -720,7 +720,7 @@ writeWord64N8Host = loop 0
 writeWord64N16Host = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = return ()
-        loop s n = do 
+        loop s n = do
           Put.putWrite (
             writeWord64host (s+0) `mappend`
             writeWord64host (s+1) `mappend`

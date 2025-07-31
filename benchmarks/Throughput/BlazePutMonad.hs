@@ -4,7 +4,7 @@
 -- Module      : Data.Binary.Put
 -- Copyright   : Lennart Kolmodin
 -- License     : BSD3-style (see LICENSE)
--- 
+--
 -- Maintainer  : Lennart Kolmodin <kolmodin@dtek.chalmers.se>
 -- Stability   : stable
 -- Portability : Portable to Hugs and GHC. Requires MPTCs
@@ -64,7 +64,7 @@ import Control.Applicative
 
 ------------------------------------------------------------------------
 
--- XXX Strict in buffer only. 
+-- XXX Strict in buffer only.
 data PairS a = PairS a {-# UNPACK #-}!Builder
 
 sndS :: PairS a -> Builder

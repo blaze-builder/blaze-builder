@@ -11,7 +11,7 @@ import Blaze.ByteString.Builder
 import Throughput.Utils
 
 serialize :: Int -> Int -> Endian -> Int -> L.ByteString
-serialize wordSize chunkSize end = toLazyByteString . 
+serialize wordSize chunkSize end = toLazyByteString .
   case (wordSize, chunkSize, end) of
     (1, 1,_)   -> writeByteN1
     (1, 2,_)   -> writeByteN2
@@ -201,7 +201,7 @@ writeWord16N16Big = loop 0
 writeWord16N1Little = loop 0
   where loop s n | s `seq` n `seq` False = undefined
         loop _ 0 = mempty
-        loop s n = 
+        loop s n =
           fromWrite (writeWord16le (s+0)) `mappend`
           loop (s+1) (n-1)
 

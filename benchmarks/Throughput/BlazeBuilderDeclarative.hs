@@ -12,7 +12,7 @@ import Blaze.ByteString.Builder
 import Throughput.Utils
 
 serialize :: Int -> Int -> Endian -> Int -> L.ByteString
-serialize wordSize chunkSize end = toLazyByteString . 
+serialize wordSize chunkSize end = toLazyByteString .
   case (wordSize, chunkSize, end) of
     (1, 1,_)   -> writeByteN1
     (1, 2,_)   -> writeByteN2
@@ -193,5 +193,4 @@ writeWord64N2Host  = fromWrite2List  writeWord64host . word64List
 writeWord64N4Host  = fromWrite4List  writeWord64host . word64List
 writeWord64N8Host  = fromWrite8List  writeWord64host . word64List
 writeWord64N16Host = fromWrite16List writeWord64host . word64List
-
 

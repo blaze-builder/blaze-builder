@@ -23,6 +23,3 @@ loop !i !c
           return $ i + 1
     {-# INLINE subcases #-}
 
-
-  
-
