@@ -49,7 +49,7 @@ Tested-with:
 
 Extra-doc-files:
                      README.markdown
-                     CHANGES
+                     CHANGELOG.md
 
 Extra-source-files:
                      Makefile
