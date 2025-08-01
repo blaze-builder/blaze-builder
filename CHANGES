@@ -1,3 +1,10 @@
+* 0.4.4 2025-07-31
+  - Optimization:
+    `Blaze.ByteString.Builder.Char.Utf8.fromText = Data.Text.Encoding.encodeUtf8Builder`
+    rather than going through `String`.
+    (Alex Biehl, PR #11 https://github.com/blaze-builder/blaze-builder/pull/11)
+  - Tested with GHC 8.0 - 9.12.2
+
 * 0.4.3 2025-05-15
   - Fix computation of max buffer overhead on 32 bit platforms
     (sternenseemann, PR #8 https://github.com/blaze-builder/blaze-builder/pull/8)

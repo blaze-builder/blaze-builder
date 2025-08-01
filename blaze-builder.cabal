@@ -1,5 +1,6 @@
+Cabal-version:       1.18
 Name:                blaze-builder
-Version:             0.4.3
+Version:             0.4.4
 Synopsis:            Efficient buffered output.
 
 Description:
@@ -30,7 +31,6 @@ Stability:           Stable
 
 Category:            Data
 Build-type:          Simple
-Cabal-version:       >= 1.10
 
 Tested-with:
   GHC == 9.12.2
@@ -47,11 +47,12 @@ Tested-with:
   GHC == 8.2.2
   GHC == 8.0.2
 
+Extra-doc-files:
+                     README.markdown
+                     CHANGES
+
 Extra-source-files:
                      Makefile
-                     README.markdown
-                     TODO
-                     CHANGES
 
                      benchmarks/*.hs
                      benchmarks/Throughput/*.hs
