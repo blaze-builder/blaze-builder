@@ -44,7 +44,8 @@ import qualified Blaze.ByteString.Builder.Char8 as Char8
 shiftr_w32 :: Word32 -> Int -> Word32
 
 #if defined(__GLASGOW_HASKELL__) && !defined(__HADDOCK__)
-#if MIN_VERSION_ghc_prim(0,8,0)
+#if MIN_VERSION_base(4,16,0)
+-- base >= 4.16 proxy for GHC >= 9.2 which fixes ghc-prim >= 0.8
 shiftr_w32 (W32# w) (I# i) = W32# (wordToWord32# ((word32ToWord# w) `uncheckedShiftRL#` i))
 #else
 shiftr_w32 (W32# w) (I# i) = W32# (w `uncheckedShiftRL#`   i)
