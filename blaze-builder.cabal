@@ -84,7 +84,6 @@ Library
   build-depends:
       base       >= 4.9    && < 5
     , bytestring >= 0.10.4 && < 1
-    , deepseq
     , ghc-prim
     , text       >= 1.1.2  && < 3
 
