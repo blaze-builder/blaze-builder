@@ -1,3 +1,7 @@
+* 0.4.4.1 2025-08-28
+  - Drop unused dependency `deepseq`
+  - Tested with GHC 8.0 - 9.14 alpha1
+
 * 0.4.4 2025-07-31
   - Optimization:
     `Blaze.ByteString.Builder.Char.Utf8.fromText = Data.Text.Encoding.encodeUtf8Builder`
